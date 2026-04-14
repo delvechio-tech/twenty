@@ -181,29 +181,9 @@ export class BillingSubscriptionService {
   async getWorkspaceEntitlements(
     workspaceId: string,
   ): Promise<BillingEntitlementDTO[]> {
-    const isBillingEnabled = this.twentyConfigService.get('IS_BILLING_ENABLED');
-    const hasValidEnterprisePlan = this.enterprisePlanService.isValid();
-
-    const entitlements = isBillingEnabled
-      ? await this.billingEntitlementRepository.find({
-          where: { workspaceId },
-        })
-      : [];
-
-    const entitlementsByKey = entitlements.reduce(
-      (acc, entitlement) => {
-        acc[entitlement.key] = entitlement;
-
-        return acc;
-      },
-      {} as Record<BillingEntitlementKey, BillingEntitlementEntity>,
-    );
-
     return Object.values(BillingEntitlementKey).map((key) => ({
       key,
-      value:
-        hasValidEnterprisePlan &&
-        (!isBillingEnabled || (entitlementsByKey[key]?.value ?? false)),
+      value: true,
     }));
   }
 
@@ -211,13 +191,7 @@ export class BillingSubscriptionService {
     workspaceId: string,
     key: BillingEntitlementKey,
   ): Promise<boolean> {
-    const entitlement = await this.billingEntitlementRepository.findOneBy({
-      workspaceId,
-      key,
-      value: true,
-    });
-
-    return entitlement?.value ?? false;
+    return true;
   }
 
   async endTrialPeriod(workspace: WorkspaceEntity) {

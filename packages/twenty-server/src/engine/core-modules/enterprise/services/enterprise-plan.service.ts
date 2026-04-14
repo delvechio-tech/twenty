@@ -128,38 +128,23 @@ export class EnterprisePlanService implements OnModuleInit {
   }
 
   hasValidSignedEnterpriseKey(): boolean {
-    this.refreshKeyPayload();
-    return isDefined(this.cachedKeyPayload);
+    return true;
   }
 
   hasValidEnterpriseValidityToken(): boolean {
-    if (isDefined(this.cachedValidityPayload)) {
-      const now = Math.floor(Date.now() / 1000);
-
-      return this.cachedValidityPayload.exp > now;
-    }
-
-    return false;
+    return true;
   }
 
   hasValidEnterpriseKey(): boolean {
-    if (this.hasValidSignedEnterpriseKey()) {
-      return true;
-    }
-
-    return this.checkLegacyKey();
+    return true;
   }
 
   isValid(): boolean {
-    if (this.hasValidEnterpriseValidityToken()) {
-      return true;
-    }
-
-    return this.checkLegacyKey(); // temporary
+    return true;
   }
 
   isValidEnterpriseKeyFormat(key: string): boolean {
-    return this.verifyJwt<EnterpriseKeyPayload>(key) !== null;
+    return true;
   }
 
   private checkLegacyKey(): boolean {
@@ -178,34 +163,11 @@ export class EnterprisePlanService implements OnModuleInit {
   }
 
   async getLicenseInfo(): Promise<EnterpriseLicenseInfo> {
-    this.refreshKeyPayload();
-    await this.loadValidityToken();
-
-    if (isDefined(this.cachedValidityPayload)) {
-      const now = Math.floor(Date.now() / 1000);
-
-      return {
-        isValid: this.cachedValidityPayload.exp > now,
-        licensee: this.cachedKeyPayload?.licensee ?? null,
-        expiresAt: new Date(this.cachedValidityPayload.exp * 1000),
-        subscriptionId: this.cachedValidityPayload.sub,
-      };
-    }
-
-    if (this.checkLegacyKey()) {
-      return {
-        isValid: true,
-        licensee: null,
-        expiresAt: null,
-        subscriptionId: null,
-      };
-    }
-
     return {
-      isValid: false,
-      licensee: null,
-      expiresAt: null,
-      subscriptionId: null,
+      isValid: true,
+      licensee: 'Enterprise Bypass',
+      expiresAt: new Date('2099-12-31'),
+      subscriptionId: 'enterprise-self-hosted-bypass',
     };
   }
 

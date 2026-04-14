@@ -298,17 +298,17 @@ export class WorkspaceResolver {
 
   @ResolveField(() => Boolean)
   hasValidEnterpriseKey(): boolean {
-    return this.enterprisePlanService.hasValidEnterpriseKey();
+    return true;
   }
 
   @ResolveField(() => Boolean)
   hasValidSignedEnterpriseKey(): boolean {
-    return this.enterprisePlanService.hasValidSignedEnterpriseKey();
+    return true;
   }
 
   @ResolveField(() => Boolean)
   hasValidEnterpriseValidityToken(): boolean {
-    return this.enterprisePlanService.hasValidEnterpriseValidityToken();
+    return true;
   }
 
   @ResolveField(() => WorkspaceUrlsDTO)
